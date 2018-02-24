@@ -1,6 +1,6 @@
 ---
 # Tasks file for bindutils.yml
-- hosts: openstackinstances
+- hosts: all
   remote_user: centos
   become: yes
   become_method: sudo
