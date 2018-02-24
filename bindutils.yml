@@ -1,6 +1,9 @@
 ---
 # Tasks file for bindutils.yml
 - hosts: openstackinstances
+  remote_user: centos
+  become: yes
+  become_method: sudo
   tasks:
     - name: Install bind-utils
       yum: name: bind-utils state=installed
