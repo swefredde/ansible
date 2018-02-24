@@ -1,4 +1,6 @@
 ---
 # Tasks file for bindutils.yml
-- name: Install bind-utils
-  yum: name: bind-utils state=installed
+- hosts: all
+  tasks:
+    - name: Install bind-utils
+      yum: name: bind-utils state=installed
