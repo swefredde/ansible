@@ -5,8 +5,8 @@
     list: ntp
   register: ntp_check
 
--debug:
-   var: ntp_check
+- debug:
+    var: ntp_check
 
 - name: Make sure ntp is not running
   service:
