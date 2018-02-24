@@ -5,15 +5,23 @@
     list: ntp
   register: ntp_check
 
+- name: Check if rpm is installed
+  yum:
+    list: rpm
+  register: rpm_check
+
 - debug:
     var: ntp_check
+
+- debug:
+    var: rpm_check
 
 - name: Make sure ntp is not running
   service:
     name: ntpd
     state: stopped
     enabled: no
-  when: ntp_check.rc == True
+  when: ntp_check.results['yumstate'] == "installed"
 
 - name: Install chrony
   yum: name=chrony state=installed
