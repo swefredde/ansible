@@ -1,0 +1,16 @@
+---
+# tasks file for chronyd
+- name: Make sure ntp is not running
+  service:
+    - name: ntpd
+    - state: stopped
+    - enabled: no
+
+- name: Install chrony
+  yum: name=chrony state=installed
+
+- name: Copy chrony config file
+  template: src=templates/chrony.conf dest=/etc/chrony.conf
+
+- name: Enable chronyd
+  service: name=chronyd enabled=yes state=restarted
