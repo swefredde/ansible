@@ -6,7 +6,7 @@
     state: latest
 
 - name: Install epel repository
-  yum: name=epel-release state=installed
+  yum: name=epel-release state=installed update_cache=yes
 
 - name: Install necessary rpm-packages
   yum: name="{{ item }}" state=present update_cache=yes
