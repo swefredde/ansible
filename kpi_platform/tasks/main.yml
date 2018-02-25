@@ -5,8 +5,8 @@
     name: '*'
     state: latest
 
-#- name: Install epel repository
-#  yum: name=epel-release state=installed
+- name: Install epel repository
+  yum: name=epel-release state=installed
 
 - name: Install necessary rpm-packages
   yum: name="{{ item }}" state=present update_cache=yes
@@ -46,8 +46,8 @@
 - name: Copy graphite-web config file (local_settings.py)
   template: src=templates/local_settings.py dest=/opt/graphite/webapp/graphite/local_settings.py
 
-#- name: Copy django graphite config file (settings.py)
-#  template: src=templates/settings.py dest=/opt/graphite/webapp/graphite/settings.py
+- name: Copy django graphite config file (settings.py)
+  template: src=templates/settings.py dest=/opt/graphite/webapp/graphite/settings.py
 
 - name: Set owner of files in /opt/graphite
   file:
