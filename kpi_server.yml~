@@ -1,0 +1,9 @@
+---
+
+- hosts: kpi_server
+  remote_user: ansible
+  become: true
+  roles:
+    - chronyd
+#    - collectd_server
+#    - kpi_platform

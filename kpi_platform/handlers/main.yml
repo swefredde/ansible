@@ -1,0 +1,6 @@
+---
+# handlers file for kpi_platform
+
+# Restart httpd
+- name: restart httpd
+  service: name=httpd state=restarted

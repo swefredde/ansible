@@ -1,0 +1,11 @@
+django>=1.9,<1.9.99
+django-tagging>=0.4.3
+pytz>=2017.2
+Twisted==16.4.1
+whisper>=1.0.1
+pip>=9.0.1
+graphite-web==1.0.1
+carbon==1.0.1
+scandir>=1.5
+service_identity>=17.0.0
+cryptography>=2.0.2

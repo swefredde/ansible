@@ -1,0 +1,116 @@
+---
+# tasks file for kpi_platform
+- name: Yum update
+  yum:
+    name: '*'
+    state: latest
+
+#- name: Install epel repository
+#  yum: name=epel-release state=installed
+
+- name: Install necessary rpm-packages
+  yum: name="{{ item }}" state=present update_cache=yes
+  with_items:
+    - httpd
+    - net-snmp
+    - perl
+    - python-devel
+    - git
+    - gcc-c++
+    - pycairo
+    - mod_wsgi
+    - libffi-devel
+    - memcached
+    - python-memcached
+
+- name: Install python-pip and nodejs
+  yum: name="{{ item }}" state=present update_cache=yes
+  with_items:
+    - python2-pip
+    - nodejs
+    - npm
+
+- name: Create directory for data files
+  file: dest=/var/lib/graphite state=directory
+
+- name: Upload file for pip requirements
+  template: src=templates/requirements.txt dest=/var/lib/graphite/requirements.txt
+
+- name: Install files from pip requirements file
+  pip:  requirements=/var/lib/graphite/requirements.txt
+
+
+- name: Install configuration files for graphite-web
+  unarchive: src=files/graphite_conf.tgz dest=/opt/graphite/conf
+
+- name: Copy graphite-web config file (local_settings.py)
+  template: src=templates/local_settings.py dest=/opt/graphite/webapp/graphite/local_settings.py
+
+- name: Copy django graphite config file (settings.py)
+  template: src=templates/settings.py dest=/opt/graphite/webapp/graphite/settings.py
+
+- name: Set owner of files in /opt/graphite
+  file:
+    path: /opt/graphite
+    state: directory
+    owner: apache
+    group: apache
+    mode: 0755
+    recurse: yes
+
+- name: Create user carbon
+  user:
+    name: carbon
+    comment: "Carbon daemon"
+    uid: 1997
+    home: /opt/home/carbon
+    state: present
+
+- name: Create group grafana
+  group:
+    gid: 1998
+    name: grafana
+    state: present
+
+- name: Set owner of files in /opt/graphite/storage
+  file:
+    path: /opt/graphite/storage
+    state: directory
+    owner: carbon
+    group: grafana
+    mode: 0755
+    recurse: yes
+
+- name: Add apache to group grafana
+  user:
+    name: apache
+    groups: grafana
+    append: yes
+
+- name: Initialize graphite.db
+  command: "PYTHONPATH=/opt/graphite/webapp django-admin.py migrate --settings=graphite.settings --run-syncdb"
+
+- name: Copy carbon-cache service file
+  template: src=templates/carbon-cache.service dest=/etc/systemd/system/carbon-cache.service
+
+- name: Start carbon cache
+  systemd:
+    name: carbon-cache
+    daemon-reload: yes
+    state: restarted
+
+- name: Enable collectd traffic through firewall
+  firewalld: port=25826/udp permanent=true state=enabled
+
+
+- name: Copy httpd graphite.conf to /etc/httpd/conf.d/graphite.conf
+  template: src=templates/graphite.conf dest=/etc/httpd/conf.d/graphite.conf
+  notify: restart httpd
+
+- name: Enable httpd
+  systemd:
+    name: httpd
+    enabled: yes
+
+- name: Enable port 80 in firewall
+  firewalld: service=http permanent=true state=enabled

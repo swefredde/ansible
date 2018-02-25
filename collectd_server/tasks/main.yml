@@ -1,0 +1,17 @@
+---
+# tasks file for collectd_server
+- name: Install collectd package
+  yum: name=collectd state=installed
+
+- name: Copy collectd.conf to /etc/collectd.conf
+  template: src=templates/collectd.conf dest=/etc/collectd.conf
+
+- name: Enable collectd
+  service: name=collectd enabled=yes state=restarted
+
+- name: Open collectd ports in firewall
+  firewalld:
+    port: 25826/udp
+    permanent: true
+    state: enabled
+
