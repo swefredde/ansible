@@ -91,8 +91,8 @@
 - name: Copy django graphite config file (settings.py)
   template: src=templates/settings.py dest=/opt/graphite/webapp/graphite/settings.py
 
-- name: Initialize graphite.db
-  command: chdir=/opt/graphite/webapp PYTHONPATH=/opt/graphite/webapp django-admin.py migrate --settings=graphite.settings --run-syncdb
+#- name: Initialize graphite.db
+#  command: chdir=/opt/graphite/webapp PYTHONPATH=/opt/graphite/webapp django-admin.py migrate --settings=graphite.settings --run-syncdb
 
 - name: Copy carbon-cache service file
   template: src=templates/carbon-cache.service dest=/etc/systemd/system/carbon-cache.service
