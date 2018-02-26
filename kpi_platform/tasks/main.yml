@@ -97,6 +97,14 @@
 - name: Copy carbon-cache service file
   template: src=templates/carbon-cache.service dest=/etc/systemd/system/carbon-cache.service
 
+- name: Create /var/log/carbon directory
+  file:
+    path: /var/log/carbon
+    state: directory
+    owner: carbon
+    group: grafana
+    mode: 775
+
 - name: Start carbon cache
   systemd:
     name: carbon-cache
