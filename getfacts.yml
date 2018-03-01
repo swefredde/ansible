@@ -1,0 +1,8 @@
+---
+- hosts: all
+  remote_user: ansible
+  tasks:
+    - name: Print facts
+      setup:
+      register: facts_out
+    - debug: var=facts_out
